@@ -1,0 +1,56 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html,
+  body,
+  #root {
+    height: 100%;
+    margin: 0;
+  }
+
+  body {
+    @apply bg-dark-bg text-slate-100 font-sans antialiased;
+  }
+
+  /* Leaflet */
+  .leaflet-container {
+    background: #0f172a;
+    font-family: inherit;
+    z-index: 1;
+  }
+  .leaflet-popup-content-wrapper,
+  .leaflet-popup-tip {
+    background: #1e293b;
+    color: #f1f5f9;
+  }
+  .leaflet-control-attribution {
+    background: rgba(15, 23, 42, 0.7) !important;
+    color: #94a3b8 !important;
+  }
+  .leaflet-control-attribution a {
+    color: #cbd5e1 !important;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  .btn-primary {
+    @apply btn bg-brand-orange hover:bg-orange-600 text-white focus:ring-orange-400;
+  }
+  .btn-secondary {
+    @apply btn bg-slate-700 hover:bg-slate-600 text-white;
+  }
+  .btn-ghost {
+    @apply btn hover:bg-slate-700 text-slate-200;
+  }
+  .input {
+    @apply w-full rounded-md border border-dark-border bg-dark-surface px-3 py-2 text-sm text-slate-100 placeholder-slate-400 focus:border-brand-orange focus:outline-none focus:ring-1 focus:ring-brand-orange;
+  }
+  .card {
+    @apply rounded-lg border border-dark-border bg-dark-surface p-4;
+  }
+}
