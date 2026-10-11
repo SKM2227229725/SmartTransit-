@@ -7,7 +7,7 @@ designed for small cities. It provides:
 - Route optimization
 - Demand forecasting
 - Anomaly detection
-- Fare calculation
+- Fare calculation acc to distance 
 - Authority-side analytics
 
 The project must be a FULLY WORKING web application — not 
