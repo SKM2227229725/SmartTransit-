@@ -1,6 +1,17 @@
 # 🚌 SmartTransit
 
+<<<<<<< HEAD
 **AI-Powered Real-Time Public Transport Tracking for Small Cities**
+=======
+- Real-time bus tracking
+- Stop-based arrival information
+- ETA prediction using machine learning
+- Route optimization
+- Demand forecasting
+- Anomaly detection
+- Fare calculation acc to distance 
+- Authority-side analytics
+>>>>>>> f08b04514580c07976a0ddf01bb7ef1dfe8c8eb2
 
 [![Django](https://img.shields.io/badge/Django-5.0.6-092E20?style=flat-square&logo=django)](https://djangoproject.com)
 [![DRF](https://img.shields.io/badge/DRF-3.15-ff1709?style=flat-square)](https://django-rest-framework.org)
