@@ -33,38 +33,41 @@ export default function PassengerDashboard() {
     let alive = true;
     (async () => {
       try {
-        const [stopsRes, routesRes] = await Promise.all([
-          stopsService.list(),
-          routesService.list(),
-        ]);
-        if (!alive) return;
-        const stopArr = Array.isArray(stopsRes.results)
-          ? stopsRes.results
-          : Array.isArray(stopsRes)
-          ? stopsRes
-          : [];
-        const routeArr = Array.isArray(routesRes.results)
-          ? routesRes.results
-          : Array.isArray(routesRes)
-          ? routesRes
-          : [];
-        setStops(stopArr);
-        setRoutes(routeArr);
-
-        if (routeArr.length > 0) {
-          const stopsRes2 = await routesService.stops(routeArr[0].id);
-          if (!alive) return;
-          const ordered = Array.isArray(stopsRes2.data) ? stopsRes2.data : [];
-          setRoutePolyline(
-            ordered
-              .map((rs) =>
-                rs?.stop ? [rs.stop.latitude, rs.stop.longitude] : null
-              )
-              .filter(Boolean)
-          );
+        // 1. Load Stops independently
+        try {
+          const stopsRes = await stopsService.list();
+          if (alive) {
+            const stopArr = Array.isArray(stopsRes?.results) ? stopsRes.results : Array.isArray(stopsRes) ? stopsRes : [];
+            setStops(stopArr);
+          }
+        } catch (err) {
+          console.error("Failed to load stops:", err);
         }
+
+        // 2. Load Routes independently
+        try {
+          const routesRes = await routesService.list();
+          if (alive) {
+            const routeArr = Array.isArray(routesRes?.results) ? routesRes.results : Array.isArray(routesRes) ? routesRes : [];
+            setRoutes(routeArr);
+
+            // 3. Load Polyline based on first route
+            if (routeArr.length > 0) {
+              const stopsRes2 = await routesService.stops(routeArr[0].id);
+              if (alive) {
+                const ordered = Array.isArray(stopsRes2?.data) ? stopsRes2.data : Array.isArray(stopsRes2?.results) ? stopsRes2.results : Array.isArray(stopsRes2) ? stopsRes2 : [];
+                setRoutePolyline(
+                  ordered.map((rs) => rs?.stop ? [rs.stop.latitude, rs.stop.longitude] : null).filter(Boolean)
+                );
+              }
+            }
+          }
+        } catch (err) {
+          console.error("Failed to load routes:", err);
+        }
+
       } catch (e) {
-        toast.error("Failed to load stops/routes.");
+        toast.error("Failed to load data.");
       }
     })();
     return () => {
@@ -75,7 +78,9 @@ export default function PassengerDashboard() {
   // Poll active buses
   const fetchActive = useCallback(async () => {
     const res = await busesService.active();
-    return Array.isArray(res?.data) ? res.data : [];
+    if (Array.isArray(res?.data)) return res.data;
+    if (Array.isArray(res)) return res;
+    return [];
   }, []);
 
   const { data: activeBuses = [], error: pollError } = usePolling(fetchActive, {
@@ -170,7 +175,7 @@ export default function PassengerDashboard() {
         />
 
         {(visibleBuses?.length ?? 0) === 0 && (
-          <div className="pointer-events-none absolute inset-x-0 bottom-6 z-[999] flex justify-center">
+          <div className="pointer-events-none absolute inset-x-6 bottom-6 z-[999] flex justify-center">
             <div className="rounded-md bg-dark-surface/90 px-4 py-2 text-sm text-slate-300 shadow-lg">
               No active buses right now.
             </div>
