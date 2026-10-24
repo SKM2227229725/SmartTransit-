@@ -33,28 +33,29 @@ export default function PassengerDashboard() {
     let alive = true;
     (async () => {
       try {
-        // 1. Load Stops independently
+        // 1. Load Stops
         try {
           const stopsRes = await stopsService.list();
           if (alive) {
-            const stopArr = Array.isArray(stopsRes?.results) ? stopsRes.results : Array.isArray(stopsRes) ? stopsRes : [];
+            const stopArr = Array.isArray(stopsRes?.results) ? stopsRes.results : Array.isArray(stopsRes) ? stopsRes : Array.isArray(stopsRes?.data) ? stopsRes.data : [];
             setStops(stopArr);
           }
         } catch (err) {
           console.error("Failed to load stops:", err);
         }
 
-        // 2. Load Routes independently
+        // 2. Load Routes
         try {
           const routesRes = await routesService.list();
           if (alive) {
-            const routeArr = Array.isArray(routesRes?.results) ? routesRes.results : Array.isArray(routesRes) ? routesRes : [];
+            const routeArr = Array.isArray(routesRes?.results) ? routesRes.results : Array.isArray(routesRes) ? routesRes : Array.isArray(routesRes?.data) ? routesRes.data : [];
             setRoutes(routeArr);
 
             // 3. Load Polyline based on first route
             if (routeArr.length > 0) {
               const stopsRes2 = await routesService.stops(routeArr[0].id);
               if (alive) {
+                // Handle DRF response shape for route stops
                 const ordered = Array.isArray(stopsRes2?.data) ? stopsRes2.data : Array.isArray(stopsRes2?.results) ? stopsRes2.results : Array.isArray(stopsRes2) ? stopsRes2 : [];
                 setRoutePolyline(
                   ordered.map((rs) => rs?.stop ? [rs.stop.latitude, rs.stop.longitude] : null).filter(Boolean)
@@ -78,7 +79,9 @@ export default function PassengerDashboard() {
   // Poll active buses
   const fetchActive = useCallback(async () => {
     const res = await busesService.active();
+    // Handle different response shapes: res.data, res.results, or res directly
     if (Array.isArray(res?.data)) return res.data;
+    if (Array.isArray(res?.results)) return res.results;
     if (Array.isArray(res)) return res;
     return [];
   }, []);
