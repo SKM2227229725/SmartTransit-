@@ -15,4 +15,5 @@ urlpatterns = [
     path("api/", include("routes.urls")),
     path("api/trips/", include("trips.urls")),
     path("api/", include("tracking.urls")),
+    path("api/", include("tracking.urls")),  
 ]
