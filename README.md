@@ -1,8 +1,6 @@
 # 🚌 SmartTransit
 
-<<<<<<< HEAD
 **AI-Powered Real-Time Public Transport Tracking for Small Cities**
-=======
 - Real-time bus tracking
 - Stop-based arrival information
 - ETA prediction using machine learning
